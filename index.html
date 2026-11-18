@@ -40,25 +40,36 @@ body {
   text-shadow: 0 0 8px gold;
 }
 
+.music {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
 .record {
   width: 230px;
   height: 230px;
   flex-shrink: 0;
   border-radius: 50%;
-  background:
-    repeating-radial-gradient(
-      circle,
-      #111 0px,
-      #292929 2px,
-      #080808 4px,
-      #191919 6px
-    );
+  background: repeating-radial-gradient(
+    circle,
+    #111 0px,
+    #292929 2px,
+    #080808 4px,
+    #191919 6px
+  );
   border: 5px solid #292929;
   box-shadow: 0 0 30px #b8860b66;
   display: flex;
   justify-content: center;
   align-items: center;
   animation: spin 5s linear infinite;
+  animation-play-state: paused;
+}
+
+.record.playing {
+  animation-play-state: running;
 }
 
 .center {
@@ -77,6 +88,21 @@ body {
   height: 9px;
   background: #000;
   border-radius: 50%;
+}
+
+button {
+  background: transparent;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 12px 30px;
+  font-family: monospace;
+  cursor: pointer;
+  letter-spacing: 3px;
+}
+
+button:hover {
+  background: #ffd700;
+  color: #000;
 }
 
 @keyframes spin {
@@ -108,18 +134,22 @@ body {
 
   <div id="lyrics"></div>
 
-  <div class="record">
-    <div class="center">
-      <div class="hole"></div>
+  <div class="music">
+
+    <div class="record" id="record">
+      <div class="center">
+        <div class="hole"></div>
+      </div>
     </div>
+
+    <button id="playBtn">▶ PLAY</button>
+
   </div>
 
 </div>
 
-<audio id="audio" autoplay loop>
-  <source
-    src="https://raw.githubusercontent.com/reiivvyya/song/main/FannCode_Py_mp3.mp3"
-    type="audio/mpeg">
+<audio id="audio">
+  <source src="https://raw.githubusercontent.com/reiivvyya/song/main/FannCode_Py_mp3.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -141,38 +171,69 @@ const lines = [
   ["Baby, just say yes ", 0.1]
 ];
 
-const delays = [
-  0.1, 0.1, 0.1, 0.1, 0.2,
-  2.4, 0.28, 0.2, 0.2, 0.2,
-  0.2, 0.2, 0.2, 0.2, 0.2
-];
-
 const output = document.getElementById("lyrics");
 const audio = document.getElementById("audio");
+const record = document.getElementById("record");
+const playBtn = document.getElementById("playBtn");
 
 const sleep = ms =>
   new Promise(resolve => setTimeout(resolve, ms));
 
-async function start() {
+let lyricStarted = false;
+let lyricTimer = null;
+
+async function startLyrics() {
+  if (lyricStarted) return;
+  lyricStarted = true;
+
+  output.textContent = "";
+
   for (let i = 0; i < lines.length; i++) {
     const [line, speed] = lines[i];
 
     for (const char of line) {
+      if (audio.paused) return;
+
       output.textContent += char;
       await sleep(speed * 1000);
     }
 
     output.textContent += "\n";
-    await sleep(delays[i] * 1000);
+
+    await sleep(1000);
   }
 }
 
-start();
+playBtn.addEventListener("click", async () => {
 
-// AUTO PLAY SAAT WEB DIBUKA
-audio.play().catch(() => {
-  console.log("Autoplay diblokir oleh browser.");
+  if (audio.paused) {
+    try {
+      await audio.play();
+
+      record.classList.add("playing");
+      playBtn.textContent = "Ⅱ PAUSE";
+
+      if (!lyricStarted) {
+        startLyrics();
+      }
+
+    } catch (error) {
+      alert("Musik gagal diputar. Coba lagi.");
+    }
+
+  } else {
+    audio.pause();
+    record.classList.remove("playing");
+    playBtn.textContent = "▶ PLAY";
+  }
+
 });
+
+audio.addEventListener("ended", () => {
+  record.classList.remove("playing");
+  playBtn.textContent = "▶ PLAY";
+});
+
 </script>
 
 </body>
