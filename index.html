@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: #ffd700;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  font-family: monospace;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 45px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+#lyrics {
+  flex: 1;
+  white-space: pre-wrap;
+  line-height: 1.9;
+  font-size: 15px;
+  text-shadow: 0 0 8px gold;
+}
+
+.record {
+  width: 230px;
+  height: 230px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      #111 0px,
+      #292929 2px,
+      #080808 4px,
+      #191919 6px
+    );
+  border: 5px solid #292929;
+  box-shadow: 0 0 30px #b8860b66;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: spin 5s linear infinite;
+}
+
+.center {
+  width: 78px;
+  height: 78px;
+  background: radial-gradient(circle, #ffd700, #8b6500);
+  border: 5px solid #222;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hole {
+  width: 9px;
+  height: 9px;
+  background: #000;
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media(max-width: 650px) {
+  .container {
+    flex-direction: column-reverse;
+    gap: 35px;
+  }
+
+  .record {
+    width: 180px;
+    height: 180px;
+  }
+
+  #lyrics {
+    width: 100%;
+    font-size: 13px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div id="lyrics"></div>
+
+  <div class="record">
+    <div class="center">
+      <div class="hole"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const lines = [
+  ["That you were Romeo ", 0.08],
+  ["you were throwing pebbles ", 0.08],
+  ["And my daddy said ", 0.08],
+  ["Stay away from Juliet ", 0.08],
+  ["And I was crying on the staircase ", 0.08],
+  ["Begging you, Please don't go ", 0.08],
+  ["And I said ", 0.1],
+  ["Romeo take me ", 0.1],
+  ["Somewhere we can be alone ", 0.08],
+  ["I'll be waiting ", 0.1],
+  ["All there's left to do is run ", 0.07],
+  ["You'll be the prince, ", 0.07],
+  ["And I'll be the princess, ", 0.07],
+  ["It's a love story ", 0.08],
+  ["Baby, just say yes ", 0.1]
+];
+
+const delays = [
+  0.1, 0.1, 0.1, 0.1, 0.2,
+  2.4, 0.28, 0.2, 0.2, 0.2,
+  0.2, 0.2, 0.2, 0.2, 0.2
+];
+
+const output = document.getElementById("lyrics");
+
+const sleep = ms =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+async function start() {
+  for (let i = 0; i < lines.length; i++) {
+    const [line, speed] = lines[i];
+
+    for (const char of line) {
+      output.textContent += char;
+      await sleep(speed * 1000);
+    }
+
+    output.textContent += "\n";
+    await sleep(delays[i] * 1000);
+  }
+}
+
+start();
+</script>
+
+</body>
+</html>
