@@ -40,13 +40,6 @@ body {
   text-shadow: 0 0 8px gold;
 }
 
-.music {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
-
 .record {
   width: 230px;
   height: 230px;
@@ -66,11 +59,6 @@ body {
   justify-content: center;
   align-items: center;
   animation: spin 5s linear infinite;
-  animation-play-state: paused;
-}
-
-.record.playing {
-  animation-play-state: running;
 }
 
 .center {
@@ -91,26 +79,8 @@ body {
   border-radius: 50%;
 }
 
-button {
-  background: transparent;
-  border: 1px solid #ffd700;
-  color: #ffd700;
-  padding: 12px 30px;
-  font-family: monospace;
-  cursor: pointer;
-  letter-spacing: 3px;
-  box-shadow: 0 0 12px #ffd70044;
-}
-
-button:hover {
-  background: #ffd700;
-  color: #000;
-}
-
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @media(max-width: 650px) {
@@ -138,16 +108,10 @@ button:hover {
 
   <div id="lyrics"></div>
 
-  <div class="music">
-
-    <div class="record" id="record">
-      <div class="center">
-        <div class="hole"></div>
-      </div>
+  <div class="record">
+    <div class="center">
+      <div class="hole"></div>
     </div>
-
-    <button id="playBtn">Ⅱ PAUSE</button>
-
   </div>
 
 </div>
@@ -159,7 +123,6 @@ button:hover {
 </audio>
 
 <script>
-
 const lines = [
   ["That you were Romeo ", 0.08],
   ["you were throwing pebbles ", 0.08],
@@ -186,8 +149,6 @@ const delays = [
 
 const output = document.getElementById("lyrics");
 const audio = document.getElementById("audio");
-const record = document.getElementById("record");
-const playBtn = document.getElementById("playBtn");
 
 const sleep = ms =>
   new Promise(resolve => setTimeout(resolve, ms));
@@ -206,38 +167,12 @@ async function start() {
   }
 }
 
-// AUTO PLAY
-async function autoPlay() {
-  try {
-    await audio.play();
-    record.classList.add("playing");
-    playBtn.textContent = "Ⅱ PAUSE";
-  } catch (error) {
-    console.log("Browser memblokir autoplay.");
-  }
-}
-
-// PLAY / PAUSE
-playBtn.addEventListener("click", async () => {
-  if (audio.paused) {
-    try {
-      await audio.play();
-      record.classList.add("playing");
-      playBtn.textContent = "Ⅱ PAUSE";
-    } catch (error) {
-      console.log("Musik gagal diputar.");
-    }
-  } else {
-    audio.pause();
-    record.classList.remove("playing");
-    playBtn.textContent = "▶ PLAY";
-  }
-});
-
-// START WEBSITE
 start();
-autoPlay();
 
+// AUTO PLAY SAAT WEB DIBUKA
+audio.play().catch(() => {
+  console.log("Autoplay diblokir oleh browser.");
+});
 </script>
 
 </body>
