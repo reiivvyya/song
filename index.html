@@ -108,7 +108,9 @@ button:hover {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media(max-width: 650px) {
@@ -137,22 +139,27 @@ button:hover {
   <div id="lyrics"></div>
 
   <div class="music">
+
     <div class="record" id="record">
       <div class="center">
         <div class="hole"></div>
       </div>
     </div>
 
-    <button id="playBtn">▶ PLAY</button>
+    <button id="playBtn">Ⅱ PAUSE</button>
+
   </div>
 
 </div>
 
-<audio id="audio" loop>
-  <source src="https://raw.githubusercontent.com/reiivvyya/song/main/FannCode_Py_mp3.mp3" type="audio/mpeg">
+<audio id="audio" autoplay loop>
+  <source
+    src="https://raw.githubusercontent.com/reiivvyya/song/main/FannCode_Py_mp3.mp3"
+    type="audio/mpeg">
 </audio>
 
 <script>
+
 const lines = [
   ["That you were Romeo ", 0.08],
   ["you were throwing pebbles ", 0.08],
@@ -199,6 +206,18 @@ async function start() {
   }
 }
 
+// AUTO PLAY
+async function autoPlay() {
+  try {
+    await audio.play();
+    record.classList.add("playing");
+    playBtn.textContent = "Ⅱ PAUSE";
+  } catch (error) {
+    console.log("Browser memblokir autoplay.");
+  }
+}
+
+// PLAY / PAUSE
 playBtn.addEventListener("click", async () => {
   if (audio.paused) {
     try {
@@ -206,7 +225,7 @@ playBtn.addEventListener("click", async () => {
       record.classList.add("playing");
       playBtn.textContent = "Ⅱ PAUSE";
     } catch (error) {
-      alert("Musik gagal diputar. Periksa koneksi internet.");
+      console.log("Musik gagal diputar.");
     }
   } else {
     audio.pause();
@@ -215,7 +234,10 @@ playBtn.addEventListener("click", async () => {
   }
 });
 
+// START WEBSITE
 start();
+autoPlay();
+
 </script>
 
 </body>
